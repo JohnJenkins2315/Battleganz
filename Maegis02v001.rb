@@ -17,7 +17,7 @@ def level1(name, spell2, country)
 Walking down the street he notices\na young man by the dreamcatcher shop by the side of the road.\nThey look each other up and down, and suddenly,\n
 the young man pulls out a knife.\nWill you cast a spell? Yes or no?"
   battle1 = gets
-  if battle1 == "Yes\n" || battle1 == "yes\n" || battle1 == "YES\n"
+  if battle1.downcase == "yes\n" 
     puts "\n\n\"NO!\"\n\nThe noble #{name.chomp} moves back immediately as the young man\nthrusts with his blade, coming within\nan inch of his life. #{name.chomp} reaches into\n his coat and pulls out his wand.\n\n\"#{spell2.chomp}!\",\n\nhe yells, as the young man struggles\nto keep his balance. A blinding flash of light comes out\nof the wand. The
 young man is hit in the chest\nand falls over, dead. #{name.chomp} looks down to see that there is a small cut on\nhis shoulder..."
     myOnlyFriend
@@ -38,7 +38,7 @@ class Game
   def start_game (name, spell1, spell2, spell3, country)
     puts "\nThe skies are full of blood, #{name.chomp} of #{country.chomp}.\nDo you want to slay the dragon, yes or no?"
     answer1 = gets
-    if answer1.chomp == "yes" || answer1.chomp == "Yes" || answer1.chomp == "YES"
+    if answer1.chomp.downcase == "yes" 
       puts "\nGood\n"
       level1(name, spell2, country)
     else myOnlyFriend
@@ -282,59 +282,48 @@ class PyroClass < PlayerClass
 
 end
 
+desire_map = {
+   "a" => {
+     :player_class => "thief",
+     :return_text =>  "I desire money. More than anything.",
+     :desire => "money" ,
+     :fun => ->(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC) {ThiefClass.begin(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC)}
+   }, 
+   "s" => {
+     :player_class => "general",
+     :return_text =>  "I desire power. More than anything.",
+     :desire => "power" ,
+     :fun => ->(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC) {GeneralClass.begin(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC)}
+   },
+   "d" => {
+     :player_class => "pyro",
+     :return_text =>  "I desire revenge. More than anything.",
+     :desire => "pyro" ,
+     :fun => ->(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC) {PyroClass.begin(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC)}
+   },
+
+}
+
+
 def getDesire(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor)
-
-
-  if want == "a\n" || want == "A\n"
-    playerClass = "thief"
-    puts "I desire money. More than anything."
-    desire = "money"
-    playerC = playerClass 
-    player = ThiefClass.begin(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC)
-
-  elsif want == "s\n" ||want == "S\n"
-    playerClass = "general" 
-    puts "I desire power More than anything."
-    desire = "power"
-    playerC = playerClass 
-    player = GeneralClass.begin(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC)
-
-  elsif want == "d\n" || want == "D\n"
-    playerClass = "pyro" 
-    puts "I desire revenge. More than anything."
-    desire = "revenge"
-    playerC = playerClass
-    player = PyroClass.begin(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor, desire, playerC) 
-  end
-
+  want_d = want.strip.downcase
+  r = desire_map[want_d]
+  playerClass = r[:player_class]
+  desire = r[:desire]
+  playerC = playerClass
+  player = r[:fun].call(want, namef, nameb, friendName, friendNat, yourNat, yourMon, spouse, eyecolor)
 end
 
+eyeMap = {
+  "a" => "silver",
+  "s" => "red",
+  "d" => "blue",
+  "f" => "green"
+}
+
 def makeWifeEyes(eyes)
-
-  if eyes == "a\n" || eyes == "A\n"
-    eyecolor = "silver"
-
-
-  elsif eyes == "s\n" || eyes == "S\n"
-    eyecolor = "red"
-
-
-
-  elsif eyes == "d\n" || eyes == "D\n"
-    eyecolor = "blue"
-
-
-
-  elsif eyes == "f\n" || eyes == "F\n"
-    eyecolor = "green"
-
-  else
-    eyecolor = "jagged striped"
-
-    return eyecolor
-
-
-  end
+  eye_color = eyeMap[eyes.strip.downcase] || "jagged striped"
+  return eye_color
 end
 
 
